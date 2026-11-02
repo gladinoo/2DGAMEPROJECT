@@ -1,14 +1,16 @@
-"""케이블 연결: 주변기기를 PC 뒷면 포트(DP · USB · 오디오)에 잇는다. 선이 교차하면 감점."""
+"""케이블 연결: 주변기기를 PC 뒷면 포트(DP · USB · 오디오)에 잇는다. 선이 교차하면 감점.
+좌표는 배선 정리 화면(wire_mode) 기준: 위 = 책상 위 기기(책상 순서 그대로), 아래 = 포트 한 줄."""
 from common import ITEMS, PARTS
 
 PORT_COUNT = {'USB': 4, 'AUDIO': 2}          # DP 개수는 그래픽카드 등급이 정함
 PORT_COLOR = {'DP': (255, 77, 141), 'USB': (46, 230, 214), 'AUDIO': (255, 214, 92)}
 PORT_NAMES = {'DP': 'DP', 'USB': 'USB', 'AUDIO': '오디오'}
 ORDER = ['DP', 'USB', 'AUDIO']               # PC 뒷면 포트는 한 줄: 기기 순서와 포트 순서가 엇갈리면 선이 꼬인다
-PORT_Y, PORT_X0, PORT_GAP = 120, 790, 52
+PORT_Y, PORT_X0, PORT_GAP = 170, 240, 100
 SLOT_OFFSET = {'DP': 0, 'USB': 3, 'AUDIO': 7}  # DP 최대 3 · USB 4 · 오디오 2
-PANEL = (PORT_X0 - 40, PORT_Y - 34, PORT_X0 + PORT_GAP * 8 + 40, PORT_Y + 30)
-PLUG_Y = 214
+PANEL = (PORT_X0 - 60, PORT_Y - 56, PORT_X0 + PORT_GAP * 8 + 60, PORT_Y + 44)
+PLUG_Y = 405
+DEV_X0, DEV_GAP = 150, 145                     # 책상 슬롯 → 배선 화면 x
 
 
 def port_count(t, pc):
@@ -22,15 +24,14 @@ def port_pos(t, i):
 
 
 def plug_pos(room, p):
-    x1, _, x2, _ = room.rect(p)
-    return (x1 + x2) // 2, PLUG_Y
+    return DEV_X0 + (p['slot'] + ITEMS[p['id']]['size'] / 2) * DEV_GAP, PLUG_Y
 
 
 def port_at(x, y, pc):
     for t in ORDER:
         for i in range(port_count(t, pc)):
             px, py = port_pos(t, i)
-            if abs(x - px) <= 18 and abs(y - py) <= 18:
+            if abs(x - px) <= 30 and abs(y - py) <= 22:
                 return t, i
     return None
 

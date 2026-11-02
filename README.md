@@ -29,14 +29,14 @@ pip install pico2d
 python main.py
 ```
 
-조작: 좌클릭 드래그(배치) · 우클릭(되돌리기) · C(케이블 모드: 기기를 끌어 포트에 꽂기) · Tab(책상 ↔ PC 조립) · Enter(채점) · ESC(종료)
+조작: 좌클릭 드래그(배치) · 우클릭(되돌리기) · C(배선 정리 화면: 기기를 끌어 포트에 꽂기) · Tab(책상 ↔ PC 조립) · Enter(채점) · ESC(종료)
 
 ## 구조
 
 | 파일 | 역할 |
 |---|---|
 | `main.py`, `game_framework.py` | 실행, 모드 전환 |
-| `title_mode.py` → `request_mode.py` → `decorate_mode.py` ⇄ `build_mode.py` → `result_mode.py` | 화면(모드) |
+| `title_mode.py` → `request_mode.py` → `decorate_mode.py` ⇄ `build_mode.py` · `wire_mode.py` → `result_mode.py` | 화면(모드) |
 | `room.py` | 벽 · 책상 위 2레이어 슬롯 배치 |
 | `cables.py` | 포트 · 케이블 연결 · 꼬임(교차) 판정 (`python cables.py`로 자체 테스트) |
 | `scorer.py` | 채점 · 시너지 · 부팅 판정 (`python scorer.py`로 자체 테스트) |
