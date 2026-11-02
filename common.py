@@ -1,8 +1,8 @@
-"""화면 크기, 데이터, 폰트, 그리기 도우미. 그래픽은 지금 사각형 + 글자이고, 나중에 이미지로 교체한다."""
+"""화면 크기, 데이터, 폰트, 그리기 도우미. 스프라이트는 resource/ (tools/make_sprites.js로 생성)."""
 import json
 import os
 
-from pico2d import draw_rectangle, load_font
+from pico2d import draw_rectangle, load_font, load_image
 
 WIDTH, HEIGHT = 1280, 720
 BASE = os.path.dirname(os.path.abspath(__file__))
@@ -54,3 +54,19 @@ def to_canvas_y(event_y):
 def inside(x, y, rect):
     x1, y1, x2, y2 = rect
     return x1 <= x <= x2 and y1 <= y <= y2
+
+
+_images = {}
+
+
+def sprite(name):
+    if name not in _images:
+        _images[name] = load_image(os.path.join(BASE, 'resource', name + '.png'))
+    return _images[name]
+
+
+def draw_fit(name, cx, cy, max_w, max_h):
+    """비율을 유지한 채 상자 안에 맞춰 그린다 (상점 썸네일 · 부품 아이콘용)."""
+    img = sprite(name)
+    k = min(max_w / img.w, max_h / img.h)
+    img.draw(cx, cy, img.w * k, img.h * k)

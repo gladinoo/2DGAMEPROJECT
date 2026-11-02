@@ -6,12 +6,12 @@ import build_mode
 import result_mode
 import state
 import ui
-from common import WIDTH, HEIGHT, ITEMS, box, outline, text, to_canvas_y, inside
+from common import WIDTH, HEIGHT, ITEMS, box, outline, text, to_canvas_y, inside, sprite, draw_fit
 from room import LAYERS, LAYER_NAMES, SLOT_X0, SLOT_W, SLOT_COUNT, drop_target
 
 SHOP_W, ROW_H, ROW_TOP = 270, 31, 600
 SHOP_IDS = list(ITEMS)
-PC_RECT = (1170, 80, 1250, 270)
+PC_RECT = (1168, 80, 1252, 276)
 BTN_PC = (930, 10, 1090, 50)
 BTN_DONE = (1100, 10, 1270, 50)
 
@@ -92,34 +92,36 @@ def update():
     pass
 
 
-def text_color(color):
-    return (43, 45, 66) if sum(color) > 450 else (255, 255, 255)
-
-
-def draw_item(item_id, x1, y1, x2, y2):
-    c = tuple(ITEMS[item_id]['color'])
-    box(x1, y1, x2, y2, c)
-    outline(x1, y1, x2, y2)
-    text(x1 + 6, (y1 + y2) // 2, ITEMS[item_id]['name'], 14, text_color(c))
+def draw_sprite(item_id, x1, y1, x2, y2):
+    """칸(rect) 안에 소품을 그린다. 책상 위 · 바닥은 바닥선에 붙이고, 벽은 가운데 정렬."""
+    img = sprite(item_id)
+    cx = (x1 + x2) // 2
+    layer = ITEMS[item_id]['layer']
+    if item_id == 'rug':
+        img.draw(cx, 60 + img.h // 2)
+    elif layer == 'wall':
+        img.draw(cx, (y1 + y2) // 2)
+    else:
+        img.draw(cx, y1 + img.h // 2)
 
 
 def draw_room():
-    box(SHOP_W, 190, WIDTH, HEIGHT - 70, (233, 228, 240))   # 벽
-    box(SHOP_W, 0, WIDTH, 190, (201, 173, 167))             # 바닥
-    box(SLOT_X0 - 10, 310, SLOT_X0 + SLOT_W * SLOT_COUNT + 10, 330, (139, 94, 60))  # 책상 상판
-    box(SLOT_X0, 60, SLOT_X0 + 18, 310, (107, 68, 41))
-    box(SLOT_X0 + SLOT_W * SLOT_COUNT - 18, 60, SLOT_X0 + SLOT_W * SLOT_COUNT, 310, (107, 68, 41))
-    box(*PC_RECT, (43, 45, 66))
-    pc_ok = len(state.pc) == 5
-    text(PC_RECT[0] + 22, PC_RECT[3] - 24, 'PC', 22, (242, 165, 65) if pc_ok else (255, 255, 255))
-    text(PC_RECT[0] + 8, PC_RECT[1] + 20, f"{len(state.pc)}/5", 16, (255, 255, 255))
-    for layer, (bottom, h) in LAYERS.items():
-        text(SHOP_W + 8, bottom + h // 2, LAYER_NAMES[layer], 14, (141, 153, 174))
-        if held and ITEMS[held]['layer'] == layer:  # 놓을 수 있는 레이어 슬롯 표시
-            for s in range(SLOT_COUNT):
+    sprite('room_bg').draw(SHOP_W + (WIDTH - SHOP_W) // 2, (HEIGHT - 70) // 2)
+    by_layer = lambda *layers: [p for p in state.room.placed if p['layer'] in layers]
+    for p in by_layer('wall') + [p for p in by_layer('floor') if p['id'] == 'rug']:
+        draw_sprite(p['id'], *state.room.rect(p))
+    sprite('desk').draw(SLOT_X0 + SLOT_W * SLOT_COUNT // 2, 330 - 136)
+    for p in by_layer('desk') + [p for p in by_layer('floor') if p['id'] != 'rug']:
+        draw_sprite(p['id'], *state.room.rect(p))
+    case = state.pc.get('CASE')
+    sprite(case or 'case_empty').draw((PC_RECT[0] + PC_RECT[2]) // 2, PC_RECT[1] + 98)
+    label = '부팅 준비' if len(state.pc) == 5 else f"PC 부품 {len(state.pc)}/5"
+    text(PC_RECT[0] - 6, PC_RECT[3] + 14, label, 14, (43, 45, 66))
+    if held:
+        bottom, h = LAYERS[ITEMS[held]['layer']]
+        for s in range(SLOT_COUNT):
+            if state.room.fits(held, ITEMS[held]['layer'], s):  # 놓을 수 있는 칸만 표시
                 outline(SLOT_X0 + s * SLOT_W + 4, bottom, SLOT_X0 + (s + 1) * SLOT_W - 4, bottom + h, (242, 165, 65))
-    for p in state.room.placed:
-        draw_item(p['id'], *state.room.rect(p))
 
 
 def draw_shop():
@@ -130,9 +132,8 @@ def draw_shop():
         it = ITEMS[item_id]
         x1, y1, x2, y2 = shop_row(i)
         dim = it['price'] > left
-        box(x1, y1, x1 + 22, y2, tuple(it['color']))
-        outline(x1, y1, x1 + 22, y2)
-        text(x1 + 30, (y1 + y2) // 2, it['name'], 15, (170, 170, 170) if dim else (43, 45, 66))
+        draw_fit(item_id, x1 + 14, (y1 + y2) // 2, 28, 25)
+        text(x1 + 34, (y1 + y2) // 2, it['name'], 15, (170, 170, 170) if dim else (43, 45, 66))
         text(x2 - 92, (y1 + y2) // 2, f"{it['price']}만 · {LAYER_NAMES[it['layer']]}", 13, (141, 153, 174))
 
 
@@ -147,8 +148,6 @@ def draw():
     if toast:
         text(SHOP_W + 230, 30, toast, 16, (231, 111, 81))
     if held:
-        w = ITEMS[held]['size'] * SLOT_W - 12
-        h = LAYERS[ITEMS[held]['layer']][1]
         x, y = mouse
-        draw_item(held, x - w // 2, y - h // 2, x + w // 2, y + h // 2)
+        sprite(held).draw(x, y)
     update_canvas()

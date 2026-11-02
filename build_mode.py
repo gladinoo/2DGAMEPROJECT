@@ -5,7 +5,7 @@ import game_framework
 import decorate_mode
 import state
 import ui
-from common import WIDTH, HEIGHT, PARTS, box, outline, text, to_canvas_y, inside
+from common import WIDTH, HEIGHT, PARTS, box, outline, text, to_canvas_y, inside, draw_fit
 from scorer import PC_TYPES, pc_stats, boot_status
 
 COL_X0, COL_W, CARD_H = 70, 230, 80
@@ -95,8 +95,9 @@ def draw():
         on = state.pc.get(p['type']) == pid
         box(x1, y1, x2, y2, (242, 165, 65) if on else (255, 255, 255))
         outline(x1, y1, x2, y2)
-        text(x1 + 12, y2 - 22, p['name'], 18)
-        text(x1 + 12, y2 - 50, f"{p['price']}만 · {describe(p)}", 14, (74, 78, 105))
+        draw_fit(pid if p['type'] == 'CASE' else 'part_' + p['type'], x1 + 32, (y1 + y2) // 2, 48, 56)
+        text(x1 + 64, y2 - 26, p['name'], 17)
+        text(x1 + 64, y2 - 54, f"{p['price']}만 · {describe(p)}", 13, (74, 78, 105))
 
     perf, watt, cap, stars = pc_stats(state.pc)
     need = state.request()['perf']
