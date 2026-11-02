@@ -1,0 +1,29 @@
+[
+  {
+    "customer": "자취 1년차 대학생",
+    "theme": ["cozy"],
+    "required": [{"any": ["lamp_warm", "lamp_cool"], "count": 1}],
+    "forbidden": [],
+    "perf": 1,
+    "budget": 100,
+    "intro": "과제할 책상인데, 아늑했으면 좋겠어요."
+  },
+  {
+    "customer": "밤샘 개발자",
+    "theme": ["focus", "cozy"],
+    "required": [{"any": ["monitor"], "count": 2}, {"any": ["lamp_warm"], "count": 1}],
+    "forbidden": ["lamp_cool"],
+    "perf": 2,
+    "budget": 180,
+    "intro": "빌드 빨리 되는 PC에, 눈 편한 조명이면 좋겠어요."
+  },
+  {
+    "customer": "스트리머 지망생",
+    "theme": ["gamer"],
+    "required": [{"any": ["mic"], "count": 1}, {"any": ["rgb_bar"], "count": 1}],
+    "forbidden": [],
+    "perf": 3,
+    "budget": 280,
+    "intro": "방송 화면에 잡히니까 화려하게! 게임도 잘 돌아가야 해요."
+  }
+]
