@@ -39,11 +39,11 @@ def box(x1, y1, x2, y2, color):
     draw_rectangle(x1, y1, x2, y2, *color, 255, True)
 
 
-def outline(x1, y1, x2, y2, color=(43, 45, 66)):
+def outline(x1, y1, x2, y2, color=(124, 92, 255)):
     draw_rectangle(x1, y1, x2, y2, *color, 255, False)
 
 
-def text(x, y, s, size=18, color=(43, 45, 66)):
+def text(x, y, s, size=18, color=(232, 226, 255)):
     font(size).draw(x, y, s, color)
 
 

@@ -116,16 +116,16 @@ def draw_room():
     case = state.pc.get('CASE')
     sprite(case or 'case_empty').draw((PC_RECT[0] + PC_RECT[2]) // 2, PC_RECT[1] + 98)
     label = '부팅 준비' if len(state.pc) == 5 else f"PC 부품 {len(state.pc)}/5"
-    text(PC_RECT[0] - 6, PC_RECT[3] + 14, label, 14, (43, 45, 66))
+    text(PC_RECT[0] - 6, PC_RECT[3] + 14, label, 14, (46, 230, 214))
     if held:
         bottom, h = LAYERS[ITEMS[held]['layer']]
         for s in range(SLOT_COUNT):
             if state.room.fits(held, ITEMS[held]['layer'], s):  # 놓을 수 있는 칸만 표시
-                outline(SLOT_X0 + s * SLOT_W + 4, bottom, SLOT_X0 + (s + 1) * SLOT_W - 4, bottom + h, (242, 165, 65))
+                outline(SLOT_X0 + s * SLOT_W + 4, bottom, SLOT_X0 + (s + 1) * SLOT_W - 4, bottom + h, (46, 230, 214))
 
 
 def draw_shop():
-    box(0, 0, SHOP_W, HEIGHT - 70, (255, 255, 255))
+    box(0, 0, SHOP_W, HEIGHT - 70, (34, 24, 70))
     text(14, ROW_TOP + 20, '상점  (드래그해서 배치)', 18)
     left = state.money_left()
     for i, item_id in enumerate(SHOP_IDS):
@@ -133,8 +133,8 @@ def draw_shop():
         x1, y1, x2, y2 = shop_row(i)
         dim = it['price'] > left
         draw_fit(item_id, x1 + 14, (y1 + y2) // 2, 28, 25)
-        text(x1 + 34, (y1 + y2) // 2, it['name'], 15, (170, 170, 170) if dim else (43, 45, 66))
-        text(x2 - 92, (y1 + y2) // 2, f"{it['price']}만 · {LAYER_NAMES[it['layer']]}", 13, (141, 153, 174))
+        text(x1 + 34, (y1 + y2) // 2, it['name'], 15, (90, 78, 130) if dim else (232, 226, 255))
+        text(x2 - 92, (y1 + y2) // 2, f"{it['price']}만 · {LAYER_NAMES[it['layer']]}", 13, (140, 128, 200))
 
 
 def draw():
@@ -143,10 +143,10 @@ def draw():
     draw_shop()
     ui.top_bar()
     ui.button(BTN_PC, 'PC 조립 [Tab]')
-    ui.button(BTN_DONE, '완료 [Enter]', (106, 156, 120))
-    text(SHOP_W + 10, 30, '우클릭: 되돌리기(환불)', 14, (74, 78, 105))
+    ui.button(BTN_DONE, '완료 [Enter]', (255, 77, 141))
+    text(SHOP_W + 10, 30, '우클릭: 되돌리기(환불)', 14, (170, 160, 220))
     if toast:
-        text(SHOP_W + 230, 30, toast, 16, (231, 111, 81))
+        text(SHOP_W + 230, 30, toast, 16, (255, 77, 141))
     if held:
         x, y = mouse
         sprite(held).draw(x, y)

@@ -78,36 +78,36 @@ def describe(p):
 
 def gauge(y, label, value, max_value, color, caption):
     text(70, y + 12, label, 18)
-    box(200, y, 900, y + 24, (226, 228, 235))
+    box(200, y, 900, y + 24, (50, 38, 96))
     box(200, y, 200 + int(700 * min(1, value / max_value)), y + 24, color)
     text(920, y + 12, caption, 18, color)
 
 
 def draw():
     clear_canvas()
-    box(0, 0, WIDTH, HEIGHT, (243, 244, 247))
+    box(0, 0, WIDTH, HEIGHT, (18, 12, 38))
     ui.top_bar()
     text(70, 610, 'PC 조립  ·  부품을 클릭해서 장착 / 다시 클릭하면 해제', 22)
     for ti, t in enumerate(PC_TYPES):
-        text(COL_X0 + ti * COL_W, 565, TYPE_NAMES[t], 20, (231, 111, 81))
+        text(COL_X0 + ti * COL_W, 565, TYPE_NAMES[t], 20, (255, 77, 141))
     for pid, (x1, y1, x2, y2) in cards():
         p = PARTS[pid]
         on = state.pc.get(p['type']) == pid
-        box(x1, y1, x2, y2, (242, 165, 65) if on else (255, 255, 255))
+        box(x1, y1, x2, y2, (124, 92, 255) if on else (34, 24, 70))
         outline(x1, y1, x2, y2)
         draw_fit(pid if p['type'] == 'CASE' else 'part_' + p['type'], x1 + 32, (y1 + y2) // 2, 48, 56)
         text(x1 + 64, y2 - 26, p['name'], 17)
-        text(x1 + 64, y2 - 54, f"{p['price']}만 · {describe(p)}", 13, (74, 78, 105))
+        text(x1 + 64, y2 - 54, f"{p['price']}만 · {describe(p)}", 13, (170, 160, 220))
 
     perf, watt, cap, stars = pc_stats(state.pc)
     need = state.request()['perf']
-    gauge(170, '성능', perf, 22, (91, 141, 184), f"{'★' * stars or '-'}  (요구 {'★' * need})")
+    gauge(170, '성능', perf, 22, (46, 230, 214), f"{'★' * stars or '-'}  (요구 {'★' * need})")
     over = watt > cap
-    gauge(120, '소비전력', watt, max(cap, 1) if cap else 800, (231, 111, 81) if over else (106, 156, 120),
+    gauge(120, '소비전력', watt, max(cap, 1) if cap else 800, (255, 77, 141) if over else (120, 255, 170),
           f"{watt}W / {cap or '?'}W")
     status = {'ok': '부팅 OK', 'power': '파워 부족! 부팅 실패', 'missing': '부품 5종을 모두 장착하세요'}[boot_status(state.pc)]
-    text(70, 70, status, 20, (231, 111, 81) if status != '부팅 OK' else (106, 156, 120))
+    text(70, 70, status, 20, (255, 77, 141) if status != '부팅 OK' else (120, 255, 170))
     if toast:
-        text(500, 70, toast, 18, (231, 111, 81))
+        text(500, 70, toast, 18, (255, 77, 141))
     ui.button(BTN_BACK, '책상으로 [Tab]')
     update_canvas()

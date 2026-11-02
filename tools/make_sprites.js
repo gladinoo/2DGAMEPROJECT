@@ -10,7 +10,7 @@ S.monitor = [188, 118, `
   <rect x="64" y="108" width="60" height="8" rx="3" fill="#3a3d55"/>
   <rect x="88" y="86" width="12" height="24" fill="#4a4e69"/>
   <rect x="4" y="2" width="180" height="88" rx="6" fill="#1f2133"/>
-  <defs><linearGradient id="sc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2e4a7a"/><stop offset="1" stop-color="#4f86c6"/></linearGradient></defs>
+  <defs><linearGradient id="sc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a1d6e"/><stop offset="1" stop-color="#b03a8c"/></linearGradient></defs>
   <rect x="10" y="8" width="168" height="74" rx="2" fill="url(#sc)"/>
   <rect x="18" y="16" width="60" height="5" rx="2" fill="#f2a541"/><rect x="18" y="27" width="92" height="5" rx="2" fill="#9fd3c7"/>
   <rect x="30" y="38" width="70" height="5" rx="2" fill="#e9e4f0"/><rect x="30" y="49" width="48" height="5" rx="2" fill="#e76f51"/>
@@ -119,38 +119,72 @@ S.part_PSU = [64, 64, `<rect x="6" y="12" width="52" height="40" rx="4" fill="#3
   <path d="M46 22 L50 30 L45 30 L49 40" stroke="#f2a541" stroke-width="3" fill="none"/>`];
 S.part_CASE = [64, 64, `<rect x="16" y="4" width="32" height="56" rx="4" fill="#4a4e69"/><rect x="20" y="10" width="20" height="44" rx="2" fill="#5b6078"/><circle cx="30" cy="22" r="6" fill="none" stroke="#2ee6d6" stroke-width="2"/>`];
 
+// ---- 사이버 도시 (창밖 · 타이틀) ----
+function city(w, h, seed, scale = 1) {
+  let r = seed; const rnd = () => (r = (r * 16807) % 2147483647) / 2147483647;
+  const neon = ['#ff4d8d', '#2ee6d6', '#7b5cff', '#ffd65c'];
+  let out = '', x = -10;
+  for (const layer of [{c: '#3a2470', hMin: .35, hMax: .7, win: .25}, {c: '#241446', hMin: .2, hMax: .55, win: .5}]) {
+    x = -10;
+    while (x < w) {
+      const bw = (30 + rnd() * 60) * scale, bh = h * (layer.hMin + rnd() * (layer.hMax - layer.hMin));
+      out += `<rect x="${x}" y="${h - bh}" width="${bw}" height="${bh}" fill="${layer.c}"/>`;
+      for (let wy = h - bh + 8 * scale; wy < h - 6; wy += 10 * scale)
+        for (let wx = x + 5 * scale; wx < x + bw - 6 * scale; wx += 9 * scale)
+          if (rnd() < layer.win) out += `<rect x="${wx}" y="${wy}" width="${4 * scale}" height="${4 * scale}" fill="${rnd() < .7 ? '#ffd65c' : '#2ee6d6'}" opacity=".85"/>`;
+      if (rnd() < .45) {
+        const c = neon[Math.floor(rnd() * 4)], sy = h - bh + 12 * scale;
+        out += `<rect x="${x + bw * .2}" y="${sy}" width="${bw * .6}" height="${12 * scale}" fill="none" stroke="${c}" stroke-width="${3 * scale}"/>`;
+      }
+      if (rnd() < .3) out += `<rect x="${x + bw / 2 - scale}" y="${h - bh - 20 * scale}" width="${2 * scale}" height="${20 * scale}" fill="${layer.c}"/><rect x="${x + bw / 2 - 2 * scale}" y="${h - bh - 22 * scale}" width="${4 * scale}" height="${4 * scale}" fill="#ff4d8d"/>`;
+      x += bw + rnd() * 6 * scale;
+    }
+  }
+  return out;
+}
+const sky = (id) => `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b0f3d"/><stop offset=".6" stop-color="#5a2a7a"/><stop offset="1" stop-color="#c4467e"/></linearGradient>`;
+const stars = (w, h, n, seed) => { let r = seed, o = ''; const rnd = () => (r = (r * 48271) % 2147483647) / 2147483647;
+  for (let i = 0; i < n; i++) o += `<rect x="${rnd() * w}" y="${rnd() * h}" width="3" height="3" fill="#fff" opacity="${.4 + rnd() * .6}"/>`; return o; };
+
 // ---- 방 배경 (x 270~1280, y 0~650 영역 = 1010 x 650) ----
 const W = 1010, H = 650, floorH = 190;
 S.room_bg = [W, H, `<defs>
-  <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e4def0"/><stop offset="1" stop-color="#efeaf5"/></linearGradient>
-  <linearGradient id="night" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e2a4a"/><stop offset="1" stop-color="#4a5d8c"/></linearGradient>
-  <linearGradient id="fl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b98a62"/><stop offset="1" stop-color="#a0714c"/></linearGradient>
-  <pattern id="stripe" width="40" height="10" patternUnits="userSpaceOnUse"><rect width="20" height="10" fill="#fff" opacity=".18"/></pattern></defs>
-  <rect width="${W}" height="${H}" fill="url(#wall)"/><rect width="${W}" height="${H}" fill="url(#stripe)"/>
-  <g transform="translate(880 70)"><rect x="-8" y="-8" width="126" height="236" rx="4" fill="#f7f4fa"/>
-    <rect width="110" height="220" fill="url(#night)"/>
-    ${[[20,30],[70,20],[90,60],[40,80],[15,120]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.6" fill="#fff"/>`).join('')}
-    <circle cx="78" cy="42" r="12" fill="#fff4c9"/><circle cx="84" cy="38" r="11" fill="url(#night)"/>
-    <path d="M0 220 L0 170 L18 170 L18 150 L34 150 L34 180 L52 180 L52 140 L74 140 L74 165 L92 165 L92 130 L110 130 L110 220 Z" fill="#141c33"/>
-    ${[[6,180],[24,160],[58,150],[60,170],[96,140],[100,160],[40,190]].map(([x,y])=>`<rect x="${x}" y="${y}" width="5" height="6" fill="#f2c26b"/>`).join('')}
-    <rect x="53" y="0" width="4" height="220" fill="#f7f4fa"/><rect x="0" y="108" width="110" height="4" fill="#f7f4fa"/>
-    <rect x="-14" y="224" width="138" height="8" rx="2" fill="#f7f4fa"/></g>
-  <rect y="${H - floorH - 14}" width="${W}" height="14" fill="#f7f4fa"/><rect y="${H - floorH - 3}" width="${W}" height="3" fill="#d5cfe0"/>
-  <rect y="${H - floorH}" width="${W}" height="${floorH}" fill="url(#fl)"/>
-  ${[...Array(6)].map((_,i)=>`<rect y="${H - floorH + 4 + i*32}" width="${W}" height="2" fill="#8b5e3c" opacity=".35"/>`).join('')}
-  ${[...Array(6)].map((_,i)=>[...Array(5)].map((_,j)=>`<rect x="${(j*230 + (i%2)*115 + 60)}" y="${H - floorH + 6 + i*32}" width="2" height="30" fill="#8b5e3c" opacity=".3"/>`).join('')).join('')}`];
+  <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22123f"/><stop offset="1" stop-color="#341c5c"/></linearGradient>
+  ${sky('sky')}</defs>
+  <rect width="${W}" height="${H}" fill="url(#wall)"/>
+  ${[...Array(14)].map((_, i) => `<rect x="${i * 76}" y="0" width="2" height="${H - floorH}" fill="#4a2c7c" opacity=".6"/>`).join('')}
+  <rect x="0" y="0" width="${W}" height="6" fill="#2ee6d6"/><rect x="0" y="6" width="${W}" height="6" fill="#2ee6d6" opacity=".25"/>
+  <g transform="translate(868 40)"><rect x="-10" y="-10" width="142" height="330" fill="#120a26"/>
+    <rect width="122" height="310" fill="url(#sky)"/>${stars(122, 150, 14, 7)}
+    <circle cx="88" cy="46" r="13" fill="#ffe9a8"/>
+    <g transform="translate(0 130)">${city(122, 180, 11, .8)}</g>
+    <rect x="59" y="0" width="4" height="310" fill="#120a26"/><rect x="0" y="150" width="122" height="4" fill="#120a26"/>
+    <rect x="-10" y="-10" width="142" height="330" fill="none" stroke="#ff4d8d" stroke-width="3"/></g>
+  <rect y="${H - floorH - 8}" width="${W}" height="8" fill="#120a26"/><rect y="${H - floorH - 4}" width="${W}" height="3" fill="#ff4d8d"/>
+  <rect y="${H - floorH}" width="${W}" height="${floorH}" fill="#170d2e"/>
+  ${[...Array(6)].map((_, i) => `<rect y="${H - floorH + 10 + i * 32}" width="${W}" height="2" fill="#2ee6d6" opacity="${.15 + i * .05}"/>`).join('')}
+  ${[...Array(13)].map((_, i) => `<rect x="${i * 84}" y="${H - floorH}" width="2" height="${floorH}" fill="#2ee6d6" opacity=".18"/>`).join('')}`];
 
-// 책상 (상판 + 다리 + 서랍) 820 x 270
-S.desk = [820, 272, `<rect x="0" y="0" width="820" height="22" rx="4" fill="#9a6a44"/><rect x="0" y="0" width="820" height="6" rx="3" fill="#b8865d"/>
-  <rect x="14" y="22" width="22" height="250" fill="#7a5132"/><rect x="784" y="22" width="22" height="250" fill="#7a5132"/>
-  <rect x="600" y="22" width="184" height="70" fill="#8b5e3c"/><rect x="606" y="28" width="172" height="58" rx="3" fill="#9a6a44"/>
-  <rect x="672" y="52" width="40" height="8" rx="4" fill="#5e3c22"/>
-  <rect x="36" y="22" width="564" height="10" fill="#7a5132"/>`];
+// 책상 (상판 + 다리 + 서랍) 820 x 272
+S.desk = [820, 272, `<rect x="0" y="0" width="820" height="22" fill="#2a2350"/><rect x="0" y="0" width="820" height="4" fill="#2ee6d6"/>
+  <rect x="14" y="22" width="22" height="250" fill="#1d1838"/><rect x="784" y="22" width="22" height="250" fill="#1d1838"/>
+  <rect x="600" y="22" width="184" height="70" fill="#231c44"/><rect x="606" y="28" width="172" height="58" fill="#2c2454"/>
+  <rect x="672" y="52" width="40" height="6" fill="#ff4d8d"/>
+  <rect x="36" y="22" width="564" height="10" fill="#1d1838"/><rect x="36" y="30" width="564" height="2" fill="#7b5cff"/>`];
+
+// 타이틀 배경 1280 x 720
+S.title_bg = [1280, 720, `<defs>${sky('tsky')}</defs><rect width="1280" height="720" fill="url(#tsky)"/>${stars(1280, 360, 80, 3)}
+  <circle cx="1040" cy="150" r="46" fill="#ffe9a8"/>
+  <g transform="translate(0 300)">${city(1280, 420, 5, 1.6)}</g>
+  <rect y="660" width="1280" height="60" fill="#120a26"/><rect y="660" width="1280" height="4" fill="#2ee6d6"/>
+  <rect x="100" y="150" width="700" height="250" fill="#120a26" opacity=".55"/>`];
 
 (async () => {
   for (const [name, [w, h, body]] of Object.entries(S)) {
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${body}</svg>`;
-    await sharp(Buffer.from(svg)).png().toFile(path.join(OUT, name + '.png'));
+    const f = w > 500 ? 4 : 3;  // 도트 느낌: 작게 줄였다가 nearest로 다시 키움
+    const small = await sharp(Buffer.from(svg)).resize(Math.ceil(w / f), Math.ceil(h / f), { kernel: 'nearest' }).png().toBuffer();
+    await sharp(small).resize(w, h, { kernel: 'nearest' }).png().toFile(path.join(OUT, name + '.png'));
   }
   console.log(Object.keys(S).length, 'sprites');
 })();

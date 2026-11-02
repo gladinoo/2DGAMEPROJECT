@@ -31,12 +31,12 @@ def update():
 def draw():
     req = state.request()
     clear_canvas()
-    box(0, 0, WIDTH, HEIGHT, (243, 244, 247))
-    box(340, 110, 940, 620, (255, 255, 255))
+    box(0, 0, WIDTH, HEIGHT, (18, 12, 38))
+    box(340, 110, 940, 620, (34, 24, 70))
     outline(340, 110, 940, 620)
-    text(380, 580, f"의뢰 {state.request_index + 1}", 20, (231, 111, 81))
+    text(380, 580, f"의뢰 {state.request_index + 1}", 20, (255, 77, 141))
     text(380, 535, req['customer'], 36)
-    text(380, 480, f"\"{req['intro']}\"", 18, (74, 78, 105))
+    text(380, 480, f"\"{req['intro']}\"", 18, (170, 160, 220))
     rows = [
         ('테마', ' · '.join(THEME_NAMES[t] for t in req['theme'])),
         ('필수', ', '.join(f"{'/'.join(ITEMS[i]['name'] for i in r['any'])} {r['count']}개" for r in req['required'])),
@@ -46,7 +46,7 @@ def draw():
     ]
     for i, (k, v) in enumerate(rows):
         y = 410 - i * 52
-        text(380, y, k, 20, (231, 111, 81))
+        text(380, y, k, 20, (255, 77, 141))
         text(500, y, v, 20)
-    text(380, 140, '클릭해서 의뢰 수락', 18, (141, 153, 174))
+    text(380, 140, '클릭해서 의뢰 수락', 18, (140, 128, 200))
     update_canvas()

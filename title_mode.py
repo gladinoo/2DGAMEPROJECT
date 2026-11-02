@@ -2,7 +2,7 @@ from pico2d import *
 
 import game_framework
 import request_mode
-from common import WIDTH, HEIGHT, box, text
+from common import WIDTH, HEIGHT, box, text, sprite
 
 message = ''
 
@@ -29,10 +29,10 @@ def update():
 
 def draw():
     clear_canvas()
-    box(0, 0, WIDTH, HEIGHT, (43, 45, 66))
-    text(120, 470, '데스크테리어 의뢰소', 64, (255, 255, 255))
-    text(124, 400, '손님의 취향과 예산에 맞춰 책상을 꾸미고 PC를 조립하세요', 22, (216, 218, 229))
-    text(124, 260, '클릭하거나 Enter를 눌러 시작', 22, (242, 165, 65))
+    sprite('title_bg').draw(WIDTH // 2, HEIGHT // 2)
+    text(120, 470, '데스크테리어 의뢰소', 64, (255, 77, 141))
+    text(124, 400, '손님의 취향과 예산에 맞춰 책상을 꾸미고 PC를 조립하세요', 22, (200, 192, 240))
+    text(124, 350, '클릭하거나 Enter를 눌러 시작', 22, (46, 230, 214))
     if message:
-        text(124, 200, message, 20, (106, 156, 120))
+        text(124, 610, message, 20, (120, 255, 170))
     update_canvas()
