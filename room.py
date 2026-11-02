@@ -1,13 +1,12 @@
-"""정면 뷰 책상: 벽 · 책상 위 · 바닥 3레이어, 각 레이어는 가로 슬롯 8칸."""
+"""정면 뷰 책상: 2레이어(벽 · 책상 위), 각 레이어는 가로 슬롯 7칸."""
 from common import ITEMS
 
-SLOT_X0, SLOT_W, SLOT_COUNT = 340, 100, 8
+SLOT_X0, SLOT_W, SLOT_COUNT = 300, 110, 7
 LAYERS = {  # layer -> (bottom y, height)
-    'wall': (470, 90),
-    'desk': (330, 80),
-    'floor': (80, 90),
+    'wall': (420, 150),
+    'desk': (210, 190),
 }
-LAYER_NAMES = {'wall': '벽', 'desk': '책상 위', 'floor': '바닥'}
+LAYER_NAMES = {'wall': '벽', 'desk': '책상 위'}
 
 
 class Room:

@@ -35,7 +35,7 @@ python main.py
 |---|---|
 | `main.py`, `game_framework.py` | 실행, 모드 전환 |
 | `title_mode.py` → `request_mode.py` → `decorate_mode.py` ⇄ `build_mode.py` → `result_mode.py` | 화면(모드) |
-| `room.py` | 벽 · 책상 위 · 바닥 3레이어 슬롯 배치 |
+| `room.py` | 벽 · 책상 위 2레이어 슬롯 배치 |
 | `scorer.py` | 채점 · 시너지 · 부팅 판정 (`python scorer.py`로 자체 테스트) |
 | `state.py` | 의뢰 하나 동안의 배치 · PC · 예산 상태 |
 | `data/*.json` | 소품 · 부품 · 의뢰 데이터 (코드 수정 없이 추가) |

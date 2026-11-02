@@ -11,7 +11,7 @@ from room import LAYERS, LAYER_NAMES, SLOT_X0, SLOT_W, SLOT_COUNT, drop_target
 
 SHOP_W, ROW_H, ROW_TOP = 270, 31, 600
 SHOP_IDS = list(ITEMS)
-PC_RECT = (1168, 80, 1252, 276)
+PC_RECT = (1095, 210, 1255, 470)
 BTN_PC = (930, 10, 1090, 50)
 BTN_DONE = (1100, 10, 1270, 50)
 
@@ -93,13 +93,11 @@ def update():
 
 
 def draw_sprite(item_id, x1, y1, x2, y2):
-    """칸(rect) 안에 소품을 그린다. 책상 위 · 바닥은 바닥선에 붙이고, 벽은 가운데 정렬."""
+    """칸(rect) 안에 소품을 그린다. 책상 위는 상판에 붙이고, 벽은 가운데 정렬."""
     img = sprite(item_id)
     cx = (x1 + x2) // 2
     layer = ITEMS[item_id]['layer']
-    if item_id == 'rug':
-        img.draw(cx, 60 + img.h // 2)
-    elif layer == 'wall':
+    if layer == 'wall':
         img.draw(cx, (y1 + y2) // 2)
     else:
         img.draw(cx, y1 + img.h // 2)
@@ -108,15 +106,13 @@ def draw_sprite(item_id, x1, y1, x2, y2):
 def draw_room():
     sprite('room_bg').draw(SHOP_W + (WIDTH - SHOP_W) // 2, (HEIGHT - 70) // 2)
     by_layer = lambda *layers: [p for p in state.room.placed if p['layer'] in layers]
-    for p in by_layer('wall') + [p for p in by_layer('floor') if p['id'] == 'rug']:
-        draw_sprite(p['id'], *state.room.rect(p))
-    sprite('desk').draw(SLOT_X0 + SLOT_W * SLOT_COUNT // 2, 330 - 136)
-    for p in by_layer('desk') + [p for p in by_layer('floor') if p['id'] != 'rug']:
+    for p in by_layer('wall') + by_layer('desk'):
         draw_sprite(p['id'], *state.room.rect(p))
     case = state.pc.get('CASE')
-    sprite(case or 'case_empty').draw((PC_RECT[0] + PC_RECT[2]) // 2, PC_RECT[1] + 98)
+    img = sprite(case or 'case_empty')
+    img.draw((PC_RECT[0] + PC_RECT[2]) // 2, PC_RECT[1] + img.h // 2)
     label = '부팅 준비' if len(state.pc) == 5 else f"PC 부품 {len(state.pc)}/5"
-    text(PC_RECT[0] - 6, PC_RECT[3] + 14, label, 14, (46, 230, 214))
+    text(PC_RECT[0] + 20, PC_RECT[3] + 16, label, 14, (46, 230, 214))
     if held:
         bottom, h = LAYERS[ITEMS[held]['layer']]
         for s in range(SLOT_COUNT):
