@@ -4,6 +4,7 @@ import game_framework
 import request_mode
 import title_mode
 import scorer
+import cables
 import state
 from common import WIDTH, HEIGHT, REQUESTS, box, outline, text
 
@@ -12,7 +13,8 @@ result = None
 
 def init():
     global result
-    result = scorer.score(state.request(), state.room.placed, state.pc, state.spent())
+    state.cables = cables.prune(state.cables, state.room, state.pc)
+    result = scorer.score(state.request(), state.room, state.pc, state.spent(), state.cables)
 
 
 def finish():

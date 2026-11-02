@@ -73,7 +73,8 @@ def describe(p):
         return f"용량 {p['capacity']}W"
     if p['type'] == 'CASE':
         return '외형 · 시너지용'
-    return f"성능 +{p['perf']} · {p['watt']}W"
+    dp = f" · DP {p['dp']}" if 'dp' in p else ''
+    return f"성능 +{p['perf']} · {p['watt']}W{dp}"
 
 
 def gauge(y, label, value, max_value, color, caption):

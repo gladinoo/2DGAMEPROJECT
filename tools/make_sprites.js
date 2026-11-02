@@ -75,6 +75,20 @@ S.headset = [98, 150, `<defs>${RGB('hr', 1)}${glow('hg', 4)}</defs>
   <path d="M20 70 Q20 28 49 28 Q78 28 78 70" stroke="#5a4a96" stroke-width="2" fill="none"/>
   ${[14,72].map(x=>`<rect x="${x-2}" y="62" width="16" height="34" rx="6" fill="url(#hr)" filter="url(#hg)" opacity=".8"/><rect x="${x}" y="64" width="12" height="30" rx="5" fill="#14102a"/><rect x="${x+3}" y="70" width="6" height="18" fill="url(#hr)"/>`).join('')}`];
 
+S.speaker = [98, 132, `<defs>${glow('sg', 4)}</defs>
+  <rect x="20" y="4" width="58" height="124" rx="4" fill="#14102a"/><rect x="20" y="4" width="58" height="124" rx="4" fill="none" stroke="#3b3170" stroke-width="2"/>
+  <circle cx="49" cy="30" r="11" fill="#2a2350"/><circle cx="49" cy="30" r="5" fill="#5a4a96"/>
+  <circle cx="49" cy="84" r="24" fill="#ffd65c" opacity=".5" filter="url(#sg)"/>
+  <circle cx="49" cy="84" r="22" fill="#2a2350"/><circle cx="49" cy="84" r="22" fill="none" stroke="#ffd65c" stroke-width="2"/>
+  <circle cx="49" cy="84" r="12" fill="#1c1438"/><circle cx="49" cy="84" r="4" fill="#5a4a96"/>
+  <rect x="44" y="118" width="10" height="3" fill="#2ee6d6"/><rect x="24" y="128" width="50" height="4" fill="#0a0618"/>`];
+S.webcam = [98, 100, `
+  <path d="M49 60 L28 100 M49 60 L70 100 M49 60 L49 100" stroke="#3b3170" stroke-width="4"/>
+  <rect x="44" y="50" width="10" height="12" fill="#2a2350"/>
+  <rect x="18" y="16" width="62" height="36" rx="12" fill="#14102a"/><rect x="18" y="16" width="62" height="36" rx="12" fill="none" stroke="#5a4a96" stroke-width="2"/>
+  <circle cx="49" cy="34" r="12" fill="#2a2350"/><circle cx="49" cy="34" r="8" fill="#1a3b6e"/><circle cx="46" cy="31" r="3" fill="#9fe9ff"/>
+  <circle cx="70" cy="24" r="3" fill="#ff4d8d"/>`];
+
 // ---- 벽 (밴드 안 가운데) ----
 S.shelf = [208, 130, `
   ${[[14,14,'#ff4d8d',54],[30,12,'#2ee6d6',44],[44,16,'#7b5cff',60],[62,10,'#ffd65c',40]].map(([x,w,c,h])=>`<rect x="${x}" y="${100-h}" width="${w}" height="${h}" fill="${c}"/><rect x="${x+2}" y="${100-h+6}" width="${w-4}" height="2" fill="#fff" opacity=".6"/>`).join('')}

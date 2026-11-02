@@ -5,6 +5,7 @@ from room import Room
 request_index = 0
 room = Room()
 pc = {}  # 부품 종류(CPU/GPU/RAM/PSU/CASE) -> part id
+cables = []  # {'dev': room.placed의 항목, 'type': 'DP'|'USB'|'AUDIO', 'port': 번호}
 
 
 def request():
@@ -12,9 +13,10 @@ def request():
 
 
 def reset():
-    global room, pc
+    global room, pc, cables
     room = Room()
     pc = {}
+    cables = []
 
 
 def spent():
